@@ -20,6 +20,11 @@ class User(UserMixin, db.Model):
     name: Mapped[str] = mapped_column(String(100))
     todos = relationship("TODO", back_populates="author")
 
+    def __init__(self, email, password, name):
+        self.email = email
+        self.password = password
+        self.name = name
+
 
 class TODO(db.Model):
     __tablename__ = "todos"

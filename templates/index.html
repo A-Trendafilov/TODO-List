@@ -1,5 +1,33 @@
+{% from "bootstrap5/form.html" import render_field %}
 {% extends "base.html" %}
 {% block title %}TODO List{% endblock %}
 {% block content %}
-
+<div class="container col-xl-10 col-xxl-8 px-4 py-5">
+  <div class="row align-items-center g-lg-5 py-5">
+    <div class="col-lg-7 text-center text-lg-start">
+      <h1 class="display-4 fw-bold lh-1 mb-3">Welcome to TODO List</h1>
+      <p class="col-lg-10 fs-4">Take control of your tasks and conquer your day with our intuitive and efficient TODO
+        list. Organize your work and life with ease, prioritize your tasks, and stay on top of your goals. With our
+        simple and user-friendly design, you'll be able to manage your time effectively and boost your productivity. Say
+        goodbye to overwhelm and hello to a more organized and successful you. Let's get things done together!</p>
+    </div>
+    <div class="col-md-10 mx-auto col-lg-5">
+      <form class="p-4 p-md-5 border rounded-3 bg-light" method="POST">
+        {{ form.csrf_token() }}
+        <div class="form-floating mb-3">
+          {{ render_field(form.email, class="form-control", placeholder="name@example.com") }}
+        </div>
+        <div class="form-floating mb-3">
+          {{ render_field(form.password, class="form-control", placeholder="Enter Your Password") }}
+        </div>
+        <button class="w-100 btn btn-lg btn-primary" name="action" value="login" type="submit">{{ form.submit.label }}
+        </button>
+        <div style="margin-top: 10px;"></div>
+        <button class="w-100 btn btn-lg btn-primary" name="action" value="register" type="submit">Sing Up!</button>
+        <hr class="my-4">
+        <small class="text-muted">By clicking Sign up, you agree to the terms of use.</small>
+      </form>
+    </div>
+  </div>
+</div>
 {% endblock %}
