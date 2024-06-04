@@ -1,13 +1,12 @@
 import os
 
 from dotenv import load_dotenv
-from flask import Flask, render_template, flash, redirect, url_for, request
+from flask import Flask, render_template, flash, redirect, url_for
 from flask_bootstrap import Bootstrap5
 from flask_login import (
     login_user,
     LoginManager,
     current_user,
-    login_required,
     logout_user,
 )
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -34,8 +33,8 @@ def load_user(user_id):
 
 
 # Uncomment on the 1st run to create the database.
-# with app.app_context():
-#     db.create_all()
+with app.app_context():
+    db.create_all()
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -47,13 +46,14 @@ def home():
         )
         user = result.scalar()
         if not user:
-            flash("That email does not exist, please try again.", "danger")
+            flash("That email does not exist, please try again or Sing Up!", "error")
             return redirect(url_for("home"))
         elif not check_password_hash(user.password, login_form.password.data):
             flash("Password incorrect, please try again.", "error")
             return redirect(url_for("home"))
         else:
             login_user(user)
+            flash("You are successfully logged in.", "success")
             return redirect(url_for("todos"))
     return render_template("index.html", form=login_form, current_user=current_user)
 
@@ -90,12 +90,14 @@ def create_account():
 
 @app.route("/todos")
 def todos():
-    return render_template("todos.html")
+
+    return render_template("todos.html", current_user=current_user)
 
 
 @app.route("/logout")
 def logout():
     logout_user()
+    flash("You are successfully logged out.", "success")
     return redirect(url_for("home"))
 
 
