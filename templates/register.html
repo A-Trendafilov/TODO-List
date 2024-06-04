@@ -1,0 +1,38 @@
+{% from "bootstrap5/form.html" import render_field %}
+{% extends "base.html" %}
+{% block title %}Create Account{% endblock %}
+{% block content %}
+<div class="container col-xl-10 col-xxl-8 px-4 py-5">
+  <div class="col-md-10 mx-auto col-lg-5">
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+    <ul class="alert alert-dismissible alert-info">
+      {% for category, message in messages %}
+      <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+    <h2>Create your account!</h2>
+    <form class="p-4 p-md-5 border rounded-3 bg-light" method="POST">
+      {{ form.csrf_token() }}
+      <div class="form-floating mb-3">
+        {{ render_field(form.name, class="form-control", placeholder="Enter your name.") }}
+      </div>
+      <div class="form-floating mb-3">
+        {{ render_field(form.email, class="form-control", placeholder="name@example.com") }}
+      </div>
+      <div class="form-floating mb-3">
+        {{ render_field(form.password, class="form-control", placeholder="Enter Your Password.") }}
+      </div>
+      <div class="form-floating mb-3">
+        {{ render_field(form.confirm, class="form-control", placeholder="Repeat Your Password.") }}
+      </div>
+      <button class="w-100 btn btn-lg btn-success" name="action" value="login" type="submit">{{ form.submit.label }}
+      </button>
+      <hr class="my-4">
+      <small class="text-muted">By clicking Sign up, you agree to the terms of use.</small>
+    </form>
+  </div>
+</div>
+{% endblock %}

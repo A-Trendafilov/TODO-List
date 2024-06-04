@@ -12,8 +12,17 @@
         goodbye to overwhelm and hello to a more organized and successful you. Let's get things done together!</p>
     </div>
     <div class="col-md-10 mx-auto col-lg-5">
+      {% with messages = get_flashed_messages(with_categories=True) %}
+      {% if messages %}
+      <ul class="alert alert-dismissible alert-info">
+        {% for category, message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+      {% endwith %}
       <form class="p-4 p-md-5 border rounded-3 bg-light" method="POST">
-        {{ form.csrf_token() }}
+        {{ form.csrf_token }}
         <div class="form-floating mb-3">
           {{ render_field(form.email, class="form-control", placeholder="name@example.com") }}
         </div>
@@ -23,7 +32,7 @@
         <button class="w-100 btn btn-lg btn-primary" name="action" value="login" type="submit">{{ form.submit.label }}
         </button>
         <div style="margin-top: 10px;"></div>
-        <button class="w-100 btn btn-lg btn-primary" name="action" value="register" type="submit">Sing Up!</button>
+        <a href="{{ url_for('create_account') }}" class="w-100 btn btn-lg btn-success">Sign Up!</a>
         <hr class="my-4">
         <small class="text-muted">By clicking Sign up, you agree to the terms of use.</small>
       </form>
