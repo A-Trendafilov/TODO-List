@@ -12,15 +12,6 @@
         goodbye to overwhelm and hello to a more organized and successful you. Let's get things done together!</p>
     </div>
     <div class="col-md-10 mx-auto col-lg-5">
-      {% with messages = get_flashed_messages(with_categories=True) %}
-      {% if messages %}
-      <ul class="alert alert-dismissible alert-info">
-        {% for category, message in messages %}
-        <li>{{ message }}</li>
-        {% endfor %}
-      </ul>
-      {% endif %}
-      {% endwith %}
       <form class="p-4 p-md-5 border rounded-3 bg-light" method="POST">
         {{ form.csrf_token }}
         <div class="form-floating mb-3">
