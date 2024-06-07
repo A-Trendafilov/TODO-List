@@ -1,33 +1,48 @@
 {% extends "base.html" %}
 {% block title %}{{ current_user.name }}Completed Tasks{% endblock %}
 {% block content %}
-
-<div class="container py-5">
-  <h1 class="display-4 text-center mb-4">Completed Tasks</h1>
-  <div class="row justify-content-center">
-    <div class="col-md-8">
-      {% if completed_tasks %}
-      <ul class="list-group">
-        {% for task in completed_tasks %}
-        <li class="list-group-item">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <h5 class="mb-0">{{ task.title }}</h5>
-              <p class="mb-0">Created: {{ task.created_date }}</p>
-              <p class="mb-0">Completed: {{ task.completed_date }}</p>
-            </div>
-            <div>
-              <a href="{{ url_for('delete_task', task_id=task.id)}}" class="btn btn-sm btn-outline-danger">Delete</a>
+<div class="container py-5 h-100">
+  <div class="row d-flex justify-content-center align-items-center h-100">
+    <div class="col">
+      <div class="card" id="list1">
+        <div class="card-body py-4 px-4 px-md-5">
+          <p class="h1 text-center mt-3 mb-4 pb-3 text-primary">
+            <i class="fas fa-check-square me-1"></i>
+            <u>Completed Task</u>
+          </p>
+          <div class="pb-2">
+            <div class="card">
+              <div class="card-body">
+                <div class="col-md-12">
+                  {% if completed_tasks %}
+                  <ul class="list-group">
+                    {% for task in completed_tasks %}
+                    <li class="list-group-item">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                          <h5 class="mb-0">{{ task.title }}</h5>
+                          <p class="mb-0">Created: {{ task.created_date }}</p>
+                          <p class="mb-0">Completed: {{ task.completed_date }}</p>
+                        </div>
+                        <div>
+                          <a href="{{ url_for('delete_task', task_id=task.id)}}" class="btn btn-sm btn-outline-danger">Delete</a>
+                        </div>
+                      </div>
+                    </li>
+                    {% endfor %}
+                  </ul>
+                  {% else %}
+                  <p class="text-center">You haven't completed any tasks yet.</p>
+                  {% endif %}
+                </div>
+              </div>
             </div>
           </div>
-        </li>
-        {% endfor %}
-      </ul>
-      {% else %}
-      <p class="text-center">You haven't completed any tasks yet.</p>
-      {% endif %}
+        </div>
+      </div>
     </div>
   </div>
 </div>
+
 
 {% endblock %}
