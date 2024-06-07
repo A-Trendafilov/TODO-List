@@ -1,12 +1,28 @@
-
-#list1 .form-control {
-  border-color: transparent;
-}
-#list1 .form-control:focus {
-  border-color: transparent;
-  box-shadow: none;
-}
-#list1 .select-input.form-control[readonly]:not([disabled]) {
-  background-color: #fbfbfb;
+/* Adjustments for the table container */
+.table-container {
+  overflow-x: auto; /* Enable horizontal scrolling */
+  max-height: calc(100vh - 300px); /* Adjust as needed to fit the table within the viewport */
 }
 
+/* Additional styling for the table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd; /* Add bottom border */
+}
+
+th {
+  background-color: #f2f2f2; /* Background color for header */
+  text-align: center; /* Center align header text */
+}
+
+/* Rounded corners for the card */
+.card {
+  border-radius: 10px;
+  overflow: hidden;
+}

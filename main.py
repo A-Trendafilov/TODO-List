@@ -101,6 +101,7 @@ def tasks():
         db.session.add(new_task)
         db.session.commit()
         flash("Task added successfully!", "success")
+        return redirect(url_for("tasks"))
 
     if current_user.is_authenticated:
         result = db.session.execute(
