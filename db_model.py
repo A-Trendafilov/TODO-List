@@ -15,10 +15,10 @@ db = SQLAlchemy(model_class=Base)
 class User(UserMixin, db.Model):
     __tablename__ = "users"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    email: Mapped[str] = mapped_column(String(100), unique=True)
-    password: Mapped[str] = mapped_column(String(100))
-    name: Mapped[str] = mapped_column(String(100))
-    todos = relationship("TODO", back_populates="author")
+    email: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
+    password: Mapped[str] = mapped_column(String(100), nullable=False)
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
+    tasks = relationship("Task", back_populates="author", cascade="all, delete-orphan")
 
     def __init__(self, email, password, name):
         self.email = email
@@ -26,12 +26,14 @@ class User(UserMixin, db.Model):
         self.name = name
 
 
-class TODO(db.Model):
-    __tablename__ = "todos"
+class Task(db.Model):
+    __tablename__ = "tasks"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    title: Mapped[str] = mapped_column(String(100))
-    description: Mapped[str] = mapped_column(String(200))
-    due_date: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
-    completed: Mapped[bool] = mapped_column(Boolean, default=False)
-    author_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"))
-    author = relationship("User", back_populates="todos")
+    title: Mapped[str] = mapped_column(String(100), nullable=False)
+    due_date: Mapped[datetime] = mapped_column(DateTime, nullable=True)
+    created_date: Mapped[datetime] = mapped_column(DateTime, nullable=True)
+    completed: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    author_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("users.id"), nullable=False
+    )
+    author = relationship("User", back_populates="tasks")
