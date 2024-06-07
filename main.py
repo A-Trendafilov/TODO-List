@@ -1,5 +1,5 @@
 import os
-
+from datetime import datetime
 from dotenv import load_dotenv
 from flask import Flask, render_template, flash, redirect, url_for
 from flask_bootstrap import Bootstrap5
@@ -11,15 +11,15 @@ from flask_login import (
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from db_model import db, User
-from forms import RegisterForm, LoginForm
+from db_model import db, User, Task
+from forms import RegisterForm, LoginForm, TaskForm
 
 load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = SECRET_KEY
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///main.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data.db"
 db.init_app(app)
 Bootstrap5(app)
 
@@ -54,7 +54,7 @@ def home():
         else:
             login_user(user)
             flash("You are successfully logged in.", "success")
-            return redirect(url_for("todos"))
+            return redirect(url_for("tasks"))
     return render_template("index.html", form=login_form, current_user=current_user)
 
 
@@ -84,14 +84,46 @@ def create_account():
         db.session.commit()
         login_user(new_user)
         flash("Account created successfully! You are now logged in.", "success")
-        return redirect(url_for("todos"))
+        return redirect(url_for("tasks"))
     return render_template("register.html", form=reg_form, current_user=current_user)
 
 
-@app.route("/todos")
-def todos():
+@app.route("/tasks", methods=["GET", "POST"])
+def tasks():
+    task_form = TaskForm()
+    if task_form.validate_on_submit() and current_user.is_authenticated:
+        new_task = Task(
+            title=task_form.task.data,
+            due_date=task_form.due_date.data,
+            created_date=datetime.now(),
+            author_id=current_user.id,
+        )
+        db.session.add(new_task)
+        db.session.commit()
+        flash("Task added successfully!", "success")
 
-    return render_template("todos.html", current_user=current_user)
+    if current_user.is_authenticated:
+        result = db.session.execute(
+            db.select(Task).where(Task.author_id == current_user.id)
+        )
+        user_tasks = result.scalars().all()
+    else:
+        user_tasks = []
+
+    formatted_tasks = []
+    for task in user_tasks:
+        formatted_task = {
+            "id": task.id,
+            "title": task.title,
+            "due_date": task.due_date.strftime("%d-%m-%Y") if task.due_date else None,
+            "created_date": task.created_date.strftime("%d-%m-%Y"),
+            "completed": task.completed,
+            "author_id": task.author_id,
+        }
+        formatted_tasks.append(formatted_task)
+    return render_template(
+        "tasks.html", current_user=current_user, form=task_form, tasks=formatted_tasks
+    )
 
 
 @app.route("/logout")
