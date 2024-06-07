@@ -3,95 +3,110 @@
 {% block title %}{{ current_user.name }} TODO List{% endblock %}
 {% block content %}
 
-<section class="vh-100">
-  <div class="container py-5 h-100">
-    <div class="row d-flex justify-content-center align-items-center h-100">
-      <div class="col">
-        <div class="card" id="list1">
-          <div class="card-body py-4 px-4 px-md-5">
-            <p class="h1 text-center mt-3 mb-4 pb-3 text-primary">
-              <i class="fas fa-check-square me-1"></i>
-              <u>My Todo-s</u>
-            </p>
-            <div class="pb-2">
-              <div class="card">
-                <div class="card-body">
-                  <form method="POST">
-                    {{ form.csrf_token }}
-                    <div class="row align-items-end">
-                      <div class="col-sm-12 col-md-12 col-lg-8 col-xl-9 ">
-                        {{ render_field(form.task, placeholder="Add new task....") }}
-                      </div>
-                      <div class="col-sm-12 col-md-6 col-lg-2 col-xl-2 ">
-                        {{ render_field(form.due_date) }}
-                      </div>
-                      <div class="col-sm-12 col-md-6 col-lg-2 col-xl-1 mb-3">
-                        <button class="btn btn-success" name="action" value="add" type="submit">
-                          {{ form.submit.label }}
-                        </button>
-                      </div>
+<!--<section class="vh-100">-->
+<div class="container py-5 h-100">
+  <div class="row d-flex justify-content-center align-items-center h-100">
+    <div class="col">
+      <div class="card" id="list1">
+        <div class="card-body py-4 px-4 px-md-5">
+          <p class="h1 text-center mt-3 mb-4 pb-3 text-primary">
+            <i class="fas fa-check-square me-1"></i>
+            <u>My Todo-s</u>
+          </p>
+          <div class="pb-2">
+            <div class="card">
+              <div class="card-body">
+                <form method="POST">
+                  {{ form.csrf_token }}
+                  <div class="row align-items-end">
+                    <div class="col-sm-12 col-md-12 col-lg-8 col-xl-9 ">
+                      {{ render_field(form.task, placeholder="Add new task....") }}
                     </div>
-                  </form>
-                </div>
+                    <div class="col-sm-12 col-md-6 col-lg-2 col-xl-2 ">
+                      {{ render_field(form.due_date) }}
+                    </div>
+                    <div class="col-sm-12 col-md-6 col-lg-2 col-xl-1 mb-3">
+                      <button class="btn btn-success" name="action" value="add" type="submit">
+                        {{ form.submit.label }}
+                      </button>
+                    </div>
+                  </div>
+                </form>
               </div>
+            </div>
 
-              <hr class="my-4">
+            <hr class="my-4">
 
-              <div class="table-container">
-                <table class="table table-hover">
-                  <thead class="sticky-top">
-                  <tr>
-                    <th style="width: 5%;"><i class="fas fa-hashtag"></i></th>
-                    <th style="width: 70%;">Title</th>
-                    <th style="width: 10%;"></th>
-                    <th style="width: 10%;"></th>
-                    <th style="width: 5%;"><i class="fa-solid fa-cog"></i></th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  {% for task in tasks %}
-                  <tr>
-                    <td>{{ task.id }}</td>
-                    <td>{{ task.title }}</td>
-                    <td>
-                      <a href="#!" style="text-decoration: none !important" class="text-muted" data-mdb-tooltip-init
-                         title="Created date">
-                        <p class="small mb-0"><i class="fas fa-info-circle me-2"></i>{{ task.created_date }}</p>
-                      </a>
-                    </td>
-                    {% if task.due_date: %}
-                    <td>
-                      <a href="#!" style="text-decoration: none !important" data-mdb-tooltip-init title="Due on date">
-                        <p class="small mb-0"><i class="fas fa-hourglass-half me-2 text-warning"></i>
-                          {{ task.due_date }}</p>
-                      </a>
-                    </td>
-                    {% else %}
-                    <td></td>
-                    {% endif %}
-                    <td>
-                      <div class="d-flex align-items-center">
-                        <a href="#!" class="text-info" data-mdb-tooltip-init title="Edit task"><i
-                            class="fas fa-pencil-alt me-3"></i></a>
-                        <a href="#!" class="text-danger" data-mdb-tooltip-init title="Delete task"><i
-                            class="fas fa-trash-alt me-3"></i></a>
-                        {% if not task.completed %}
-                        <a href="#!" class="text-success" data-mdb-tooltip-init title="Complete task"><i
-                            class="fas fa-check me-3"></i></a>
-                        {% endif %}
-                      </div>
-                    </td>
-                  </tr>
-                  {% endfor %}
-                  </tbody>
-                </table>
-              </div>
+            <div class="table-container">
+              <table class="table table-hover">
+                <thead class="sticky-top">
+                <tr>
+                  <th style="width: 75%;">Title</th>
+                  <th style="width: 10%;"></th>
+                  <th style="width: 10%;"></th>
+                  <th style="width: 5%;"><i class="fa-solid fa-cog"></i></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for task in tasks %}
+                {% if not task.completed %}
+                <tr>
+                  {% if task.edit %}
+                  <td>
+                    <form method="POST">
+                      {{ form.csrf_token }}
+                      {{ render_field(form.edit_task, value=task.title) }}
+                      {{ render_field(form.edit_due_date, value=task.due_date) }}
+                      <button class="btn btn-success" name="action" value="update" type="submit">
+                        {{ form.submit.label }}
+                      </button>
+                      <a class="btn btn-secondary" href="{{ url_for('tasks') }}">Cancel</a>
+                    </form>
+                  </td>
+                  {% else %}
+                  <td>{{ task.title }}</td>
+                  {% endif %}
+                  <td>
+                    <a href="#!" style="text-decoration: none !important" class="text-muted" data-mdb-tooltip-init
+                       title="Created date">
+                      <p class="small mb-0"><i class="fas fa-info-circle me-2"></i>{{ task.created_date }}</p>
+                    </a>
+                  </td>
+                  {% if task.due_date %}
+                  <td>
+                    <a href="#!" style="text-decoration: none !important" data-mdb-tooltip-init title="Due on date">
+                      <p class="small mb-0"><i class="fas fa-hourglass-half me-2 text-warning"></i>
+                        {{ task.due_date }}</p>
+                    </a>
+                  </td>
+                  {% else %}
+                  <td></td>
+                  {% endif %}
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <a href="{{url_for('edit_task', task_id=task.id)}}" class="text-info" data-mdb-tooltip-init
+                         title="Edit task"><i
+                          class="fas fa-pencil-alt me-3"></i></a>
+                      <a href="{{url_for('delete_task', task_id=task.id)}}" class="text-danger" data-mdb-tooltip-init
+                         title="Delete task"><i
+                          class="fas fa-trash-alt me-3"></i></a>
+                      <a href="{{url_for('complete_task', task_id=task.id)}}" class="text-success"
+                         data-mdb-tooltip-init title="Complete task"><i
+                          class="fas fa-check me-3"></i></a>
+                    </div>
+                  </td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</section>
+</div>
+<!--</section>-->
 
 {% endblock %}

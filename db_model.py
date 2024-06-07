@@ -31,7 +31,8 @@ class Task(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     title: Mapped[str] = mapped_column(String(100), nullable=False)
     due_date: Mapped[datetime] = mapped_column(DateTime, nullable=True)
-    created_date: Mapped[datetime] = mapped_column(DateTime, nullable=True)
+    created_date: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    completed_date: Mapped[datetime] = mapped_column(DateTime, nullable=True)
     completed: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     author_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("users.id"), nullable=False

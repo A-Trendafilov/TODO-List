@@ -1,3 +1,12 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensure the body takes up at least the height of the viewport */
+}
+
+.main-content {
+    flex-grow: 1; /* Allow the main content to grow to fill the remaining space */
+}
 /* Adjustments for the table container */
 .table-container {
   overflow-x: auto; /* Enable horizontal scrolling */
@@ -26,3 +35,4 @@ th {
   border-radius: 10px;
   overflow: hidden;
 }
+

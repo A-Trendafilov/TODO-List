@@ -14,7 +14,7 @@ from flask_login import (
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from db_model import db, User, Task
-from forms import RegisterForm, LoginForm, TaskForm
+from forms import RegisterForm, LoginForm, TaskForm, EditForm
 
 load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -35,8 +35,8 @@ def load_user(user_id):
 
 
 # Uncomment on the 1st run to create the database.
-# with app.app_context():
-#     db.create_all()
+with app.app_context():
+    db.create_all()
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -85,7 +85,10 @@ def create_account():
         db.session.add(new_user)
         db.session.commit()
         login_user(new_user)
-        flash("Account created successfully! You are now logged in.", "success")
+        flash(
+            f"{new_user.name} - Your account is created successfully! You are now logged in.",
+            "success",
+        )
         return redirect(url_for("tasks"))
     return render_template("register.html", form=reg_form, current_user=current_user)
 
@@ -103,7 +106,7 @@ def tasks():
         )
         db.session.add(new_task)
         db.session.commit()
-        flash("Task added successfully!", "success")
+        flash(f"New tasks: {new_task.title}  - added successfully!", "success")
         return redirect(url_for("tasks"))
 
     if current_user.is_authenticated:
@@ -128,6 +131,41 @@ def tasks():
     return render_template(
         "tasks.html", current_user=current_user, form=task_form, tasks=formatted_tasks
     )
+
+
+@app.route("/tasks/delete/<int:task_id>")
+@login_required
+def delete_task(task_id):
+    task_to_delete = db.get_or_404(Task, task_id)
+    db.session.delete(task_to_delete)
+    db.session.commit()
+    flash(f"Task: {task_to_delete.title} - is deleted successfully!", "success")
+    return redirect(url_for("tasks"))
+
+
+@app.route("/tasks/complete/<int:task_id>")
+@login_required
+def complete_task(task_id):
+    task_to_complete = db.get_or_404(Task, task_id)
+    task_to_complete.completed = True
+    task_to_complete.completed_date = datetime.now()
+    db.session.commit()
+    flash(f"Task: {task_to_complete.title} - is completed successfully!", "success")
+    return redirect(url_for("tasks"))
+
+
+@app.route("/tasks/edit/<int:task_id>", methods=["GET", "POST"])
+@login_required
+def edit_task(task_id):
+    task_to_edit = db.get_or_404(Task, task_id)
+    edit_form = EditForm()
+    if edit_form.validate_on_submit():
+        task_to_edit.title = edit_form.edit_title.data
+        task_to_edit.due_date = edit_form.edit_due_date.data
+        db.session.commit()
+        flash("Task updated successfully!", "success")
+        return redirect(url_for("tasks"))
+    return render_template("edit.html", form=edit_form, task=task_to_edit)
 
 
 @app.route("/logout")

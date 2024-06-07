@@ -29,3 +29,11 @@ class TaskForm(FlaskForm):
     task = StringField("Task", validators=[DataRequired()])
     due_date = DateField("Due Date", validators=[Optional()], format="%Y-%m-%d")
     submit = SubmitField("Add")
+
+
+class EditForm(FlaskForm):
+    edit_title = StringField("Edit Title", validators=[DataRequired()])
+    edit_due_date = DateField(
+        "Edit Due Date", validators=[Optional()], format="%Y-%m-%d"
+    )
+    submit = SubmitField("Save")
