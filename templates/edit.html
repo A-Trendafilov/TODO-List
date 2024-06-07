@@ -1,0 +1,46 @@
+{% from "bootstrap5/form.html" import render_field %}
+{% extends "base.html" %}
+{% block title %}Edit Task!{% endblock %}
+{% block content %}
+
+<div class="container py-5 h-100">
+  <div class="row d-flex justify-content-center align-items-center h-100">
+    <div class="col">
+      <div class="card" id="list1">
+        <div class="card-body py-4 px-4 px-md-5">
+          <p class="h1 text-center mt-3 mb-4 pb-3 text-primary">
+            <i class="fas fa-pencil-alt me-1"></i>
+            <u>Edit Task</u>
+          </p>
+          <div class="pb-2">
+            <div class="card">
+              <div class="card-body">
+                <form method="POST">
+                  {{ form.csrf_token }}
+                  <div class="row align-items-end">
+                    <div class="col-sm-12 col-xl-10">
+                      {{ render_field(form.edit_title, value=task.title) }}
+                    </div>
+                    <div class="col-sm-12 col-xl-2">
+                      {{ render_field(form.edit_due_date, value=task.due_date) }}
+                    </div>
+
+                    <div class="col-sm-12" style="text-align: center;">
+                      <button class="btn btn-success" name="action" value="update" type="submit">
+                        {{ form.submit.label }}
+                      </button>
+                      <a href="{{ url_for('tasks') }}" class="btn btn-danger">Cancel</a>
+                      <hr class="my-4">
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

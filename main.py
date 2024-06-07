@@ -137,10 +137,18 @@ def tasks():
 @login_required
 def delete_task(task_id):
     task_to_delete = db.get_or_404(Task, task_id)
-    db.session.delete(task_to_delete)
-    db.session.commit()
-    flash(f"Task: {task_to_delete.title} - is deleted successfully!", "success")
-    return redirect(url_for("tasks"))
+    if task_to_delete.completed:
+        db.session.delete(task_to_delete)
+        db.session.commit()
+        flash(
+            f"Completed task '{task_to_delete.title}' deleted successfully!", "success"
+        )
+        return redirect(url_for("completed_tasks"))
+    else:
+        db.session.delete(task_to_delete)
+        db.session.commit()
+        flash(f"Task '{task_to_delete.title}' deleted successfully!", "success")
+        return redirect(url_for("tasks"))
 
 
 @app.route("/tasks/complete/<int:task_id>")
@@ -166,6 +174,30 @@ def edit_task(task_id):
         flash("Task updated successfully!", "success")
         return redirect(url_for("tasks"))
     return render_template("edit.html", form=edit_form, task=task_to_edit)
+
+
+@app.route("/tasks/completed")
+@login_required
+def completed_tasks():
+    result = db.session.execute(
+        db.select(Task).where((Task.author_id == current_user.id) & Task.completed)
+    )
+    comp_tasks = result.scalars().all()
+    formatted_completed_tasks = [
+        {
+            "id": task.id,
+            "title": task.title,
+            "due_date": task.due_date.strftime("%d-%m-%Y") if task.due_date else None,
+            "created_date": task.created_date.strftime("%d-%m-%Y"),
+            "completed_date": task.completed_date.strftime("%d-%m-%Y"),
+        }
+        for task in comp_tasks
+    ]
+    return render_template(
+        "completed.html",
+        current_user=current_user,
+        completed_tasks=formatted_completed_tasks,
+    )
 
 
 @app.route("/logout")
