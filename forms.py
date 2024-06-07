@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField
-from wtforms.validators import DataRequired, URL, Email, Length, EqualTo
+from wtforms import StringField, SubmitField, PasswordField, DateField
+from wtforms.validators import DataRequired, Optional, Email, Length, EqualTo
+from wtforms.widgets.core import DateInput
 
 
 class RegisterForm(FlaskForm):
@@ -22,3 +23,9 @@ class LoginForm(FlaskForm):
     email = StringField("Email", validators=[DataRequired(), Email()])
     password = PasswordField("Password", validators=[DataRequired()])
     submit = SubmitField("Sing In!")
+
+
+class TaskForm(FlaskForm):
+    task = StringField("Task", validators=[DataRequired()])
+    due_date = DateField("Due Date", validators=[Optional()], format="%Y-%m-%d")
+    submit = SubmitField("Add")
