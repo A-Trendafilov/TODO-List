@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+
 from dotenv import load_dotenv
 from flask import Flask, render_template, flash, redirect, url_for
 from flask_bootstrap import Bootstrap5
@@ -8,6 +9,7 @@ from flask_login import (
     LoginManager,
     current_user,
     logout_user,
+    login_required,
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -33,8 +35,8 @@ def load_user(user_id):
 
 
 # Uncomment on the 1st run to create the database.
-with app.app_context():
-    db.create_all()
+# with app.app_context():
+#     db.create_all()
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -89,6 +91,7 @@ def create_account():
 
 
 @app.route("/tasks", methods=["GET", "POST"])
+@login_required
 def tasks():
     task_form = TaskForm()
     if task_form.validate_on_submit() and current_user.is_authenticated:
@@ -128,6 +131,7 @@ def tasks():
 
 
 @app.route("/logout")
+@login_required
 def logout():
     logout_user()
     flash("You are successfully logged out.", "success")
