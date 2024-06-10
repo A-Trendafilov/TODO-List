@@ -1,0 +1,66 @@
+{% from "bootstrap5/form.html" import render_field %}
+{% extends "base.html" %}
+{% block title %}Profile - {{ current_user.name }}{% endblock %}
+{% block content %}
+<div class="container py-5 h-100">
+  <div class="row d-flex justify-content-center align-items-center h-100">
+    <div class="col">
+      <div class="card" id="list1">
+        <div class="card-body py-4 px-4 px-md-5">
+          <p class="h1 text-center mt-3 mb-4 pb-3 text-primary">
+            <i class="fas fa-user me-1"></i>
+            <u>Edit Profile</u>
+          </p>
+          <div class="pb-2">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title mb-4">Change User Information</h5>
+                <form method="POST">
+                  {{ edit_form.csrf_token() }}
+                  <div class="mb-3">
+                    {{ render_field(edit_form.name, class="form-control", value=current_user.name) }}
+                  </div>
+                  <div class="mb-3">
+                    {{ render_field(edit_form.email, class="form-control", value=current_user.email) }}
+                  </div>
+                  <div class="mb-3">
+                    {{ render_field(edit_form.submit, class="btn btn-primary") }}
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="pb-2">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title mb-4">Change Password</h5>
+                <form method="POST">
+                  {{ password_form.csrf_token() }}
+                  <div class="mb-3">
+                    {{ render_field(password_form.old_password, class="form-control",
+                    placeholder="Enter your old password") }}
+                  </div>
+                  <div class="mb-3">
+                    {{ render_field(password_form.new_password, class="form-control",
+                    placeholder="Enter your new password") }}
+                  </div>
+                  <div class="mb-3">
+                    {{ render_field(password_form.confirm_new_password, class="form-control",
+                    placeholder="Confirm your new password") }}
+                  </div>
+                  <div class="mb-3">
+                    {{ render_field(password_form.submit, class="btn btn-primary") }}
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <a href="{{ url_for('view_profile') }}" class="btn btn-danger">Cancel</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}
