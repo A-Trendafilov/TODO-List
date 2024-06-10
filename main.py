@@ -14,7 +14,14 @@ from flask_login import (
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from db_model import db, User, Task
-from forms import RegisterForm, LoginForm, TaskForm, EditForm
+from forms import (
+    RegisterForm,
+    LoginForm,
+    TaskForm,
+    EditTaskForm,
+    EditProfileForm,
+    ChangePasswordForm,
+)
 
 load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -35,8 +42,8 @@ def load_user(user_id):
 
 
 # Uncomment on the 1st run to create the database.
-with app.app_context():
-    db.create_all()
+# with app.app_context():
+#     db.create_all()
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -166,14 +173,14 @@ def complete_task(task_id):
 @login_required
 def edit_task(task_id):
     task_to_edit = db.get_or_404(Task, task_id)
-    edit_form = EditForm()
+    edit_form = EditTaskForm()
     if edit_form.validate_on_submit():
         task_to_edit.title = edit_form.edit_title.data
         task_to_edit.due_date = edit_form.edit_due_date.data
         db.session.commit()
         flash("Task updated successfully!", "success")
         return redirect(url_for("tasks"))
-    return render_template("edit.html", form=edit_form, task=task_to_edit)
+    return render_template("edit_tasks.html", form=edit_form, task=task_to_edit)
 
 
 @app.route("/tasks/completed")
@@ -200,6 +207,42 @@ def completed_tasks():
     )
 
 
+@app.route("/profile")
+@login_required
+def view_profile():
+    return render_template("profile.html")
+
+
+@app.route("/profile/edit", methods=["GET", "POST"])
+@login_required
+def edit_profile():
+    edit_form = EditProfileForm()
+    password_form = ChangePasswordForm()
+
+    if edit_form.submit.data and edit_form.validate_on_submit():
+        current_user.name = edit_form.name.data
+        current_user.email = edit_form.email.data
+        db.session.commit()
+        flash("Profile updated successfully!", "success")
+        return redirect(url_for("view_profile"))
+
+    if password_form.submit.data and password_form.validate_on_submit():
+        if not check_password_hash(
+                current_user.password, password_form.old_password.data
+        ):
+            flash("Old password is incorrect.", "error")
+            return redirect(url_for("edit_profile"))
+
+        current_user.password = generate_password_hash(password_form.new_password.data)
+        db.session.commit()
+        flash("Password changed successfully!", "success")
+        return redirect(url_for("view_profile"))
+
+    return render_template(
+        "edit_profile.html", edit_form=edit_form, password_form=password_form
+    )
+
+
 @app.route("/logout")
 @login_required
 def logout():
@@ -209,4 +252,4 @@ def logout():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)

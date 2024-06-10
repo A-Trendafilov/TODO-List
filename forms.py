@@ -1,7 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField, DateField
 from wtforms.validators import DataRequired, Optional, Email, Length, EqualTo
-from wtforms.widgets.core import DateInput
 
 
 class RegisterForm(FlaskForm):
@@ -31,9 +30,31 @@ class TaskForm(FlaskForm):
     submit = SubmitField("Add")
 
 
-class EditForm(FlaskForm):
+class EditTaskForm(FlaskForm):
     edit_title = StringField("Edit Title", validators=[DataRequired()])
     edit_due_date = DateField(
         "Edit Due Date", validators=[Optional()], format="%Y-%m-%d"
     )
     submit = SubmitField("Save")
+
+
+class EditProfileForm(FlaskForm):
+    name = StringField("Name", validators=[DataRequired()])
+    email = StringField("Email", validators=[DataRequired(), Email()])
+    submit = SubmitField("Update Profile")
+
+
+class ChangePasswordForm(FlaskForm):
+    old_password = PasswordField("Old Password", validators=[DataRequired()])
+    new_password = PasswordField(
+        "New Password",
+        validators=[
+            DataRequired(),
+            Length(min=6),
+            EqualTo("confirm_new_password", message="Passwords must match"),
+        ],
+    )
+    confirm_new_password = PasswordField(
+        "Confirm New Password", validators=[DataRequired()]
+    )
+    submit = SubmitField("Change Password")

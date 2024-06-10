@@ -1,8 +1,9 @@
+from datetime import datetime
+
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Integer, String, ForeignKey, DateTime, Boolean
 from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped, relationship
-from datetime import datetime
 
 
 class Base(DeclarativeBase):

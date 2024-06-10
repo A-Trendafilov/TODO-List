@@ -3,7 +3,6 @@
 {% block title %}{{ current_user.name }} TODO List{% endblock %}
 {% block content %}
 
-<!--<section class="vh-100">-->
 <div class="container py-5 h-100">
   <div class="row d-flex justify-content-center align-items-center h-100">
     <div class="col">
@@ -26,7 +25,7 @@
                       {{ render_field(form.due_date) }}
                     </div>
                     <div class="col-sm-12 col-md-6 col-lg-2 col-xl-1 mb-3">
-                      <button class="btn btn-success" name="action" value="add" type="submit">
+                      <button class="btn btn-success" name="action" type="submit" value="add">
                         {{ form.submit.label }}
                       </button>
                     </div>
@@ -57,7 +56,7 @@
                       {{ form.csrf_token }}
                       {{ render_field(form.edit_task, value=task.title) }}
                       {{ render_field(form.edit_due_date, value=task.due_date) }}
-                      <button class="btn btn-success" name="action" value="update" type="submit">
+                      <button class="btn btn-success" name="action" type="submit" value="update">
                         {{ form.submit.label }}
                       </button>
                       <a class="btn btn-secondary" href="{{ url_for('tasks') }}">Cancel</a>
@@ -67,14 +66,14 @@
                   <td>{{ task.title }}</td>
                   {% endif %}
                   <td>
-                    <a href="#!" style="text-decoration: none !important" class="text-muted" data-mdb-tooltip-init
+                    <a class="text-muted" data-mdb-tooltip-init href="#!" style="text-decoration: none !important"
                        title="Created date">
                       <p class="small mb-0"><i class="fas fa-info-circle me-2"></i>{{ task.created_date }}</p>
                     </a>
                   </td>
                   {% if task.due_date %}
                   <td>
-                    <a href="#!" style="text-decoration: none !important" data-mdb-tooltip-init title="Due on date">
+                    <a data-mdb-tooltip-init href="#!" style="text-decoration: none !important" title="Due on date">
                       <p class="small mb-0"><i class="fas fa-hourglass-half me-2 text-warning"></i>
                         {{ task.due_date }}</p>
                     </a>
@@ -84,14 +83,14 @@
                   {% endif %}
                   <td>
                     <div class="d-flex align-items-center">
-                      <a href="{{url_for('edit_task', task_id=task.id)}}" class="text-info" data-mdb-tooltip-init
+                      <a class="text-info" data-mdb-tooltip-init href="{{url_for('edit_task', task_id=task.id)}}"
                          title="Edit task"><i
                           class="fas fa-pencil-alt me-3"></i></a>
-                      <a href="{{url_for('delete_task', task_id=task.id)}}" class="text-danger" data-mdb-tooltip-init
+                      <a class="text-danger" data-mdb-tooltip-init href="{{url_for('delete_task', task_id=task.id)}}"
                          title="Delete task"><i
                           class="fas fa-trash-alt me-3"></i></a>
-                      <a href="{{url_for('complete_task', task_id=task.id)}}" class="text-success"
-                         data-mdb-tooltip-init title="Complete task"><i
+                      <a class="text-success" data-mdb-tooltip-init
+                         href="{{url_for('complete_task', task_id=task.id)}}" title="Complete task"><i
                           class="fas fa-check me-3"></i></a>
                     </div>
                   </td>
@@ -107,6 +106,6 @@
     </div>
   </div>
 </div>
-<!--</section>-->
+
 
 {% endblock %}

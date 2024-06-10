@@ -20,10 +20,10 @@
         <div class="form-floating mb-3">
           {{ render_field(form.password, class="form-control", placeholder="Enter Your Password") }}
         </div>
-        <button class="w-100 btn btn-lg btn-primary" name="action" value="login" type="submit">{{ form.submit.label }}
+        <button class="w-100 btn btn-lg btn-primary" name="action" type="submit" value="login">{{ form.submit.label }}
         </button>
         <div style="margin-top: 10px;"></div>
-        <a href="{{ url_for('create_account') }}" class="w-100 btn btn-lg btn-success">Sign Up!</a>
+        <a class="w-100 btn btn-lg btn-success" href="{{ url_for('create_account') }}">Sign Up!</a>
         <hr class="my-4">
         <small class="text-muted">By clicking Sign up, you agree to the terms of use.</small>
       </form>
